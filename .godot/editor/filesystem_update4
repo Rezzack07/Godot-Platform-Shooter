@@ -1,0 +1,5 @@
+res://levels/level.tscn
+res://ui/theme/Game_theme.tres
+res://Player2/player_hit_flash_shader.tres
+res://Player/player_hit_flash_shader.tres
+res://script/health_manager.gd

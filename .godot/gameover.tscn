@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Texture2D" uid="uid://detl4bsj0hdnp" path="res://ui/PRE_ORIG_SIZE.png" id="1_3w6en"]
+[ext_resource type="Script" path="res://.godot/gameover.gd" id="1_qxbjl"]
+
+[node name="gameover" type="CanvasLayer"]
+script = ExtResource("1_qxbjl")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(0.44291076, 0.44291076, 0.44291073, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_3w6en")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 215.0
+offset_top = 80.0
+offset_right = 413.0
+offset_bottom = 210.0
+text = "Game Over"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="rety" type="Button" parent="."]
+offset_left = 289.0
+offset_top = 172.0
+offset_right = 332.0
+offset_bottom = 203.0
+text = "Rety"
+
+[node name="Exit" type="Button" parent="."]
+offset_left = 292.0
+offset_top = 211.0
+offset_right = 329.0
+offset_bottom = 242.0
+text = "Exit"
+
+[connection signal="pressed" from="rety" to="." method="_on_rety_pressed"]
+[connection signal="pressed" from="Exit" to="." method="_on_exit_pressed"]

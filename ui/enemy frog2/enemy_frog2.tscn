@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6xkcbdhhblrn"]
+
+[ext_resource type="PackedScene" uid="uid://4yyj4pyqu482" path="res://ui/enemy frog2/enemy_frog.tscn" id="1_uckoj"]
+
+[node name="Enemy_Frog" groups=["Enemy"] instance=ExtResource("1_uckoj")]
+collision_layer = 4
+collision_mask = 3
+
+[node name="CollisionShape2D" parent="." index="1" groups=["Enemy"]]
+
+[node name="StateMachineController" parent="." index="3"]
+health_amount = null
+
+[node name="Hurt" parent="StateMachine" index="2" node_paths=PackedStringArray("character_body_2d")]
+character_body_2d = NodePath("../..")
+flash_duration = 0.5
+
+[node name="CollisionShape2D" parent="AttackArea2D" index="0"]
+scale = Vector2(3.6330628, 0.6431468)
+
+[node name="HurtArea2D" parent="." index="6" groups=["Enemy"]]
+position = Vector2(0, -7)
+scale = Vector2(1.1001097, 1.0990909)
+
+[node name="CollisionShape2D" parent="HurtArea2D" index="0" groups=["Enemy"]]
+position = Vector2(-1, -15)

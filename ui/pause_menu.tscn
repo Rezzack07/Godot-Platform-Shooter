@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=3 uid="uid://yn4y6iwwp3ob"]
+
+[ext_resource type="Texture2D" uid="uid://detl4bsj0hdnp" path="res://ui/PRE_ORIG_SIZE.png" id="1_ejwgg"]
+[ext_resource type="Script" uid="uid://8h1s8aw1wje" path="res://ui/pause_menu.gd" id="1_fob5h"]
+[ext_resource type="Theme" uid="uid://dmtgg2vkvwa2s" path="res://ui/theme/Game_theme.tres" id="2_fob5h"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 2
+script = ExtResource("1_fob5h")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+modulate = Color(0.44291076, 0.44291076, 0.44291073, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_ejwgg")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_fob5h")
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "CONTINUE"
+
+[node name="MainMenuButton" type="Button" parent="MarginContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "MAIN MENU"
+
+[connection signal="pressed" from="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="pressed" from="MarginContainer/PanelContainer/MarginContainer/VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]

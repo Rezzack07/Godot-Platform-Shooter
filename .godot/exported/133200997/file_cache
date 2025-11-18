@@ -1,0 +1,43 @@
+res://Assets/Characters/alien-walking-enemy/Sprites/GreenCoin.tscn::d9f1fe94769366056bcebf2a8993be3c::1760293359::res://.godot/exported/133200997/export-233ab61633697eb178e20295f4e53fa5-GreenCoin.scn
+res://Assets/Characters/alien-walking-enemy/Sprites/OrangeCoin.tscn::4f9a2ba06866e772c32cb1e8075dffd4::1760293359::res://.godot/exported/133200997/export-d7e3a4f8f14883d9d30d6d44baa8067a-OrangeCoin.scn
+res://Assets/Characters/alien-walking-enemy/Sprites/PinkCoin.tscn::f9417ae2720b74797d75dadecc26b52b::1760293359::res://.godot/exported/133200997/export-cbd58a2efc8aa12d5080530c16ae9dca-PinkCoin.scn
+res://Assets/Characters/alien-walking-enemy/Sprites/PurpleCoin.tscn::b15b553355d7458e9b6056cbfd5a4684::1760293359::res://.godot/exported/133200997/export-8d91956c9cce33e11a7115dda3bdd2be-PurpleCoin.scn
+res://Assets/Characters/alien-walking-enemy/Sprites/RedCoin.tscn::dd39fef017f392964d9144aaa92a8ce7::1760293359::res://.godot/exported/133200997/export-19bc77bded2814b35147c4697a313195-RedCoin.scn
+res://Assets/Characters/alien-walking-enemy/Sprites/YellowCoin.tscn::f7fdf1ecbbc6b7d06c1108e416335625::1760293359::res://.godot/exported/133200997/export-5929373e655dceaef8fe34310ba6b0fa-YellowCoin.scn
+res://collectibles/coin/GreenCoin.tscn::d9f1fe94769366056bcebf2a8993be3c::1760293087::res://.godot/exported/133200997/export-9801960ddf57169cf4a95b2cc9df0ece-GreenCoin.scn
+res://collectibles/coin/OrangeCoin.tscn::4f9a2ba06866e772c32cb1e8075dffd4::1760293087::res://.godot/exported/133200997/export-73d92690850f045fc1b1e30c3efd57ca-OrangeCoin.scn
+res://collectibles/coin/PinkCoin.tscn::f9417ae2720b74797d75dadecc26b52b::1760293088::res://.godot/exported/133200997/export-a4ce82dac34063077d8e51907f982ddc-PinkCoin.scn
+res://collectibles/coin/PurpleCoin.tscn::b15b553355d7458e9b6056cbfd5a4684::1760293088::res://.godot/exported/133200997/export-642f3891266799492351779b70408abf-PurpleCoin.scn
+res://collectibles/coin/RedCoin.tscn::dd39fef017f392964d9144aaa92a8ce7::1760293088::res://.godot/exported/133200997/export-f4f2e514dc659c59db6610054aabdb0e-RedCoin.scn
+res://collectibles/coin/YellowCoin.tscn::f7fdf1ecbbc6b7d06c1108e416335625::1760293088::res://.godot/exported/133200997/export-2c909d59eb86bf318a51de35f7e5e957-YellowCoin.scn
+res://enemies/enemy crab/enemy.tscn::bf05963653adbade2d67d264dad07e46::1760346077::res://.godot/exported/133200997/export-498d1784faf0c6d409c3e1f185894f96-enemy.scn
+res://enemies/enemy frog/enemy_frog.tscn::b5b30658353da937c95fb77f4d355898::1760337507::res://.godot/exported/133200997/export-ff7086a5ec930eb1513a7cdfb79ff516-enemy_frog.scn
+res://enemies/enemy_death_effect.tscn::1db7d34d57f8026c76316526078c3d0b::1760293088::res://.godot/exported/133200997/export-3d8d6a801ba68dd7ccf93fdd610fe391-enemy_death_effect.scn
+res://levels/level.tscn::efc660f2613b02b1906160a5cd21651b::1760348303::res://.godot/exported/133200997/export-2ba9609e68cc8875d848c4125928a176-level.scn
+res://pickup/health_pickup/health_pickup.tscn::9d58420b4eda01299c514f6c2ac615d8::1760293092::res://.godot/exported/133200997/export-64265c88df6ace4486f5069de9a4eb35-health_pickup.scn
+res://Player/Bullet/bullet.tscn::e49088e6c868c42b80e74a2535ccab0a::1760338289::res://.godot/exported/133200997/export-26065a7c9c941a791d49dc17be0b662d-bullet.scn
+res://Player/Bullet/bullet_impact_effect.tscn::d3dfb02ec873dfc0a109138e9e22baf8::1760338289::res://.godot/exported/133200997/export-23b46fe3d7b724b3a009778e74c2cc04-bullet_impact_effect.scn
+res://Player/player.tscn::6008bee14d62d54609cb08c241c55ca8::1760339967::res://.godot/exported/133200997/export-d267b47f7e81a3258979164d56d0d9c2-player.scn
+res://Player/player_death_effect.tscn::15f853c48ac48ef7d0545fb11206fa21::1760338289::res://.godot/exported/133200997/export-022532ddb6c75e6b5aaf760524ea824f-player_death_effect.scn
+res://Player/player_hit_flash_shader.tres::3016733ab77b496245997171ad65bc4a::1760347945::res://.godot/exported/133200997/export-1faf8a72a77f85b5a4905810af1a1ba4-player_hit_flash_shader.res
+res://Player2/Bullet/bullet.tscn::e49088e6c868c42b80e74a2535ccab0a::1760338289::res://.godot/exported/133200997/export-e22b159f0f6ac076abf1b2b87367aef7-bullet.scn
+res://Player2/Bullet/bullet_impact_effect.tscn::d3dfb02ec873dfc0a109138e9e22baf8::1760338289::res://.godot/exported/133200997/export-4d07a7f9cbc7ad6ea6a33cf3f2b467c4-bullet_impact_effect.scn
+res://Player2/player.2tscn.tscn::1588952fe79ffe4dfccbea5bd0d321f9::1760338771::res://.godot/exported/133200997/export-5de041796e1f9953fd0a008355b0d6e4-player.2tscn.scn
+res://Player2/player.tscn::1d8b92fbf5d458c266c01315c961e9a3::1760344176::res://.godot/exported/133200997/export-541748de88dc54bd6a3de75856d2bbe2-player.scn
+res://Player2/player_death_effect.tscn::15f853c48ac48ef7d0545fb11206fa21::1760338289::res://.godot/exported/133200997/export-55aa6db5b20e6d9d47ee8080b3d2d190-player_death_effect.scn
+res://Player2/player_hit_flash_shader.tres::3016733ab77b496245997171ad65bc4a::1760347945::res://.godot/exported/133200997/export-c154452783352fa910bb0d43780ba140-player_hit_flash_shader.res
+res://ui/background/forest/parallax_background.tscn::d36d1b812356deef5ac89c14c62374ca::1760293099::res://.godot/exported/133200997/export-1e39a1a5b6fc72cfbd827e1eb88eb499-parallax_background.scn
+res://ui/enemy frog2/enemy_frog2.tscn::7c2ee4e98f46cd10e25e79dc51f465ae::1760344574::res://.godot/exported/133200997/export-462c892b052fe1632d290341304405f3-enemy_frog2.scn
+res://ui/enemy frog2/enemy_frog.tscn::1ffdb6c4f403530fdd2d1af81a81f404::1760337507::res://.godot/exported/133200997/export-0e20ec803b4a4c0bdb4eb3519eb3104c-enemy_frog.scn
+res://ui/healthbar/health_bar.tscn::dcf6f4ce8ba5f757e35571e222f680c6::1760293101::res://.godot/exported/133200997/export-191718929576802bf927250bf566186c-health_bar.scn
+res://ui/levels/level.tscn::a10257ffe0f81b182433523da2d850c7::1760338289::res://.godot/exported/133200997/export-aebd6d7fd8ebaf4009203f8a0ce88ece-level.scn
+res://ui/theme/game_over.tscn::911bad09227f2132de700365f3d47128::1760339262::res://.godot/exported/133200997/export-c47470267ed267d80bd3983113b1991b-game_over.scn
+res://ui/theme/Game_theme.tres::612d07fd9ba1ce0a02f018a665ef077d::1760347945::res://.godot/exported/133200997/export-064d56e7c7c0e565dd0b7b8d182866a5-Game_theme.res
+res://ui/game_over.tscn::0e0a7dc4209033d9853c46a83433cd00::1760339337::res://.godot/exported/133200997/export-7e68a50ec0ca2a0b9447c957bb052603-game_over.scn
+res://ui/game_screen.tscn::3836605c2cb723302d09ffe4b784437b::1760293098::res://.godot/exported/133200997/export-ca03ee035f1f76009b53eb59cd71adb3-game_screen.scn
+res://ui/level1.tscn::f58e16480c6cff5babf02064400f643f::1760317641::res://.godot/exported/133200997/export-2cb0fb9d12ae8cf9ab50c5c09aec641b-level1.scn
+res://ui/main_menu.tscn::b32bebeb6121405a5ee8acc11a89c4c1::1760293098::res://.godot/exported/133200997/export-1a1b24a6c6735a2fec28ecd357261224-main_menu.scn
+res://ui/pause_menu.tscn::6b40e183daeefb035fda738c5b74c172::1760293098::res://.godot/exported/133200997/export-abb46218b9bb803a928cbfd29199531c-pause_menu.scn
+res://ui/player.tscn::a1e638166928d48f274f85941a5c77b0::1760338173::res://.godot/exported/133200997/export-2fb72deb6310ff1ea73f5679ed142123-player.scn
+res://ui/settings_menu.tscn::5f48b869643a955b481e1e295d1855db::1760293099::res://.godot/exported/133200997/export-a006b3f48b2b1f9c1e92b26301b092df-settings_menu.scn
+res://player.tscn::db0525ef864ecc25fff8469a01b41d03::1760338188::res://.godot/exported/133200997/export-36a25e342948d0ceacc500772b5412b3-player.scn

@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://e1trufcfkcg4"]
+
+[ext_resource type="Texture2D" uid="uid://drtlhqp5rgcl6" path="res://Player2/Bullet/sprite/hit1.png" id="1_ywevu"]
+[ext_resource type="Texture2D" uid="uid://wmmethqvwo3l" path="res://Player2/Bullet/sprite/hit2.png" id="2_apq61"]
+[ext_resource type="Texture2D" uid="uid://436m6ej20sii" path="res://Player2/Bullet/sprite/hit3.png" id="3_x2tul"]
+[ext_resource type="Script" uid="uid://bhbjd43wnlct3" path="res://Player2/Bullet/bullet_impact_effect.gd" id="4_7e7h7"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6u118"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ywevu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_apq61")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_x2tul")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": true,
+"name": &"impact",
+"speed": 8.0
+}]
+
+[node name="BulletImpactEffect" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_6u118")
+animation = &"impact"
+autoplay = "impact"
+frame_progress = 0.145309
+script = ExtResource("4_7e7h7")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.4
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

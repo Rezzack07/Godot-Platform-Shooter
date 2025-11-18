@@ -1,0 +1,128 @@
+[gd_scene load_steps=21 format=3 uid="uid://4yyj4pyqu482"]
+
+[ext_resource type="Script" uid="uid://fnhvj7lltco5" path="res://ui/enemy frog2/enemy_frog.gd" id="1_1roj1"]
+[ext_resource type="Texture2D" uid="uid://bl8d6trh2wow1" path="res://ui/enemy frog2/Sprites/attack/mutant-toad-attack1.png" id="1_vpulu"]
+[ext_resource type="Texture2D" uid="uid://dmtxq0j0uvxn7" path="res://ui/enemy frog2/Sprites/attack/mutant-toad-attack2.png" id="2_sjigh"]
+[ext_resource type="Texture2D" uid="uid://bh6oglfawwdhx" path="res://ui/enemy frog2/Sprites/attack/mutant-toad-attack3.png" id="3_v2bsg"]
+[ext_resource type="Texture2D" uid="uid://dfuiurhjuggb2" path="res://ui/enemy frog2/Sprites/idle/mutant-toad-idle1.png" id="4_4wrj8"]
+[ext_resource type="Texture2D" uid="uid://ce6rvaa8xfyak" path="res://ui/enemy frog2/Sprites/idle/mutant-toad-idle2.png" id="5_7sjhw"]
+[ext_resource type="Texture2D" uid="uid://coga3i5rn78y8" path="res://ui/enemy frog2/Sprites/idle/mutant-toad-idle3.png" id="6_r706e"]
+[ext_resource type="Texture2D" uid="uid://vllkixo4ovuc" path="res://ui/enemy frog2/Sprites/idle/mutant-toad-idle4.png" id="7_f8aet"]
+[ext_resource type="Texture2D" uid="uid://cdtv70lk16hri" path="res://ui/enemy frog2/Sprites/jump/mutant-toad-jump1.png" id="8_3y3fa"]
+[ext_resource type="Texture2D" uid="uid://c432kjjvvjfre" path="res://ui/enemy frog2/Sprites/jump/mutant-toad-jump2.png" id="9_ydags"]
+[ext_resource type="Texture2D" uid="uid://cbim2x4q84mc5" path="res://ui/enemy frog2/Sprites/jump/mutant-toad-jump3.png" id="10_ryk03"]
+[ext_resource type="Texture2D" uid="uid://be6yaa48p4myk" path="res://ui/enemy frog2/Sprites/jump/mutant-toad-jump4.png" id="11_tetqp"]
+[ext_resource type="Script" uid="uid://ke8jb5ygwjjc" path="res://gravity.gd" id="12_teayq"]
+[ext_resource type="Script" uid="uid://dxutdfdqcgo2w" path="res://enemies/state_machine_controller.gd" id="13_7sjhw"]
+[ext_resource type="Script" uid="uid://c8je4o70wyeoc" path="res://script/statemachine/node_finite_state_machine.gd" id="13_v2bsg"]
+[ext_resource type="Script" uid="uid://titjv1q3r3rx" path="res://enemies/idle_state.gd" id="14_4wrj8"]
+[ext_resource type="Script" uid="uid://cffiapnx4yc17" path="res://enemies/attack_state.gd" id="16_r706e"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xtawe"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_vpulu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_sjigh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_v2bsg")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_4wrj8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_7sjhw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_r706e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_f8aet")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_3y3fa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_ydags")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_ryk03")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_tetqp")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_h84dg"]
+radius = 20.025
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_f8aet"]
+radius = 114.529
+
+[node name="Enemy_Frog" type="CharacterBody2D"]
+light_mask = 4
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_1roj1")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -32)
+sprite_frames = SubResource("SpriteFrames_xtawe")
+animation = &"jump"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, -20)
+shape = SubResource("CircleShape2D_h84dg")
+
+[node name="Gravity" type="Node" parent="." node_paths=PackedStringArray("character_body_2d")]
+script = ExtResource("12_teayq")
+character_body_2d = NodePath("..")
+
+[node name="StateMachineController" type="Node" parent="." node_paths=PackedStringArray("node_finite_state_machine")]
+script = ExtResource("13_7sjhw")
+node_finite_state_machine = NodePath("../StateMachine")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_node_state")]
+script = ExtResource("13_v2bsg")
+initial_node_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("character_body_2d", "animated_sprite_2d")]
+script = ExtResource("14_4wrj8")
+character_body_2d = NodePath("../..")
+animated_sprite_2d = NodePath("../../AnimatedSprite2D")
+slow_down_speed = 300
+
+[node name="Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("character_body_2d", "animated_sprite_2d")]
+script = ExtResource("16_r706e")
+character_body_2d = NodePath("../..")
+animated_sprite_2d = NodePath("../../AnimatedSprite2D")
+speed = 100
+
+[node name="AttackArea2D" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea2D"]
+position = Vector2(-1, -20)
+shape = SubResource("CircleShape2D_f8aet")
+debug_color = Color(0.967628, 2.31028e-06, 0.47305, 0.42)
+
+[connection signal="body_entered" from="AttackArea2D" to="StateMachineController" method="_on_attack_area_2d_body_entered"]
+[connection signal="body_exited" from="AttackArea2D" to="StateMachineController" method="_on_attack_area_2d_body_exited"]

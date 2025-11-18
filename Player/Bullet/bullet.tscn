@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://c8anvtxohvjqh"]
+
+[ext_resource type="Texture2D" uid="uid://cdd0aay7bn6u0" path="res://Player2/Bullet/sprite/dagger.png" id="1_bx8u8"]
+[ext_resource type="Script" uid="uid://1sk0ron0fqnt" path="res://Player2/Bullet/bullet.gd" id="2_gc56p"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_v8qja"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_bx8u8")
+}],
+"loop": true,
+"name": &"shot",
+"speed": 6.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v8qja"]
+size = Vector2(20, 4)
+
+[node name="bullet" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_v8qja")
+animation = &"shot"
+frame_progress = 0.842884
+script = ExtResource("2_gc56p")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+autostart = true
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(-1, 0)
+shape = SubResource("RectangleShape2D_v8qja")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]

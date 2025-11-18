@@ -1,0 +1,503 @@
+[gd_scene load_steps=39 format=3 uid="uid://c4erpvfr40pn4"]
+
+[sub_resource type="GDScript" id="GDScript_hvfyp"]
+script/source = "extends CharacterBody2D
+
+var bullet = preload(\"res://Player/Bullet/bullet.tscn\")
+var player_death_effect = preload(\"res://Player/player_death_effect.tscn\")
+var game_over_scene = preload(\"res://ui/game_over.tscn\")
+
+
+@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var muzzle: Marker2D = $muzzle
+@onready var hit_animation_player: AnimationPlayer = $HitAnimationPlayer
+
+const GRAVITY = 1000
+@export var speed : int = 1000
+@export var max_horizontal_speed : int = 300
+@export var slow_down_speed : int = 1500
+
+@export var jump : int = -300
+@export var jump_horizontal_speed : int = 1000
+@export var max_jump_horizontal_speed : int = 300
+
+enum State { Idle, Run, Jump, Shoot }
+
+var current_state : State
+var muzzle_position
+
+func _ready() -> void:
+	print(\"Testing GameOver path:\", game_over_scene)
+	current_state = State.Idle
+	muzzle_position = muzzle.position
+	
+
+func _physics_process(delta: float):
+	player_falling(delta)
+	player_idle(delta)
+	player_run(delta)
+	player_jump(delta)
+	player_muzzle_position(delta)
+	player_shooting(delta)
+	
+	move_and_slide()
+	
+	player_animations()
+	
+	#print(\"State: \", State.keys()[current_state])
+
+func player_falling(delta: float):
+	if !is_on_floor():
+		velocity.y += GRAVITY * delta
+		
+func player_idle(delta: float):
+	# ✅ Only set Idle if ON FLOOR and not moving
+	if is_on_floor() and velocity.x == 0:
+		current_state = State.Idle
+
+func player_run(delta: float):
+	# ✅ Only allow Run when ON FLOOR
+	if is_on_floor():
+		var direction = input_movement()
+		
+		if direction:
+			velocity.x += direction * speed * delta
+			current_state = State.Run
+			animated_sprite_2d.flip_h = direction < 0
+			velocity.x = clamp(velocity.x, -max_horizontal_speed, max_horizontal_speed)
+		else:
+			velocity.x = move_toward(velocity.x, 0, slow_down_speed * delta)
+
+func player_jump(delta: float):
+	# ✅ Require ON FLOOR to start a jump
+	if Input.is_action_just_pressed(\"jump\") and is_on_floor():
+		velocity.y = jump
+		current_state = State.Jump
+		
+	# ✅ Allow horizontal control while airborne
+	if !is_on_floor() and current_state == State.Jump:
+		var direction = input_movement()
+		velocity.x += direction * jump_horizontal_speed * delta
+		velocity.x = clamp(velocity.x, -max_jump_horizontal_speed, max_jump_horizontal_speed)
+
+func player_shooting(delta: float):
+	var direction = input_movement()
+	
+	if Input.is_action_just_pressed(\"shoot\"):
+		var bullet_instance = bullet.instantiate() as Node2D
+	
+	# determine direction from facing
+		if animated_sprite_2d.flip_h:
+			bullet_instance.direction = -1  # facing left
+		else:
+			bullet_instance.direction = 1   # facing right
+
+		bullet_instance.global_position = muzzle.global_position
+		get_parent().add_child(bullet_instance)
+	
+		current_state = State.Shoot
+
+		
+	if direction != 0 and Input.is_action_just_pressed(\"shoot\"):
+		var bullet_instance = bullet.instantiate() as Node2D
+		bullet_instance.direction = direction
+		bullet_instance.global_position = muzzle.global_position
+		get_parent().add_child(bullet_instance)
+		current_state = State.Shoot
+
+func player_muzzle_position(delta: float):
+	var direction = input_movement()
+	
+	if direction > 0:
+		muzzle_position.x = muzzle_position.x
+	elif direction < 0:
+		muzzle_position.x = -muzzle_position.x
+
+func player_animations():
+	if current_state == State.Idle:
+		animated_sprite_2d.play(\"idle\")
+	elif current_state == State.Run and animated_sprite_2d.animation != \"run_shoot\":
+		animated_sprite_2d.play(\"run\")
+	elif current_state == State.Jump:
+		animated_sprite_2d.play(\"jump\")
+	elif current_state == State.Shoot:
+		animated_sprite_2d.play(\"run_shoot\")
+
+func player_death():
+	print(\"Player death triggered!\")  # <--- Add this line
+
+	var player_death_effect_instance = player_death_effect.instantiate() as Node2D
+	player_death_effect_instance.global_position = global_position
+	get_parent().add_child(player_death_effect_instance)
+
+	queue_free()
+
+	var game_over_instance = game_over_scene.instantiate()
+	print(\"GameOver instance created\")  # <--- Add this line
+	get_tree().root.add_child(game_over_instance)
+	get_tree().paused = true
+
+
+	
+func input_movement():
+	var direction : float = Input.get_axis(\"move_left\", \"move_right\")
+	
+	return direction
+
+
+func _on_hurtbox_body_entered(body: Node2D) -> void:
+	if body.is_in_group(\"Enemy\"):
+		print(\"Enemy Entered\", body.damage_amount)
+		hit_animation_player.play(\"hit\")
+		HealthManager.decrease_health(body.damage_amount)
+		
+	if HealthManager.current_health == 0:
+		player_death()
+
+func reset_after_hit():
+	# This resets your player back to normal after hit animation
+	animated_sprite_2d.modulate = Color(1, 1, 1, 1) # Remove red tint
+	print(\"Player reset after hit\")
+"
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_pul1a"]
+parameter_name = "hit_colour"
+default_value_enabled = true
+default_value = Color(0.835294, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeBooleanParameter" id="VisualShaderNodeBooleanParameter_7jc40"]
+parameter_name = "enabled"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeIf" id="VisualShaderNodeIf_vewsw"]
+default_input_values = [0, 0.0, 1, 1.0, 2, 1e-05, 3, Vector3(0, 0, 0), 4, Vector3(0, 0, 0), 5, Vector3(0, 0, 0)]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_vt801"]
+input_name = "color"
+
+[sub_resource type="VisualShader" id="VisualShader_hvfyp"]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+uniform bool enabled = false;
+uniform vec4 hit_colour : source_color = vec4(0.835294, 0.000000, 0.000000, 1.000000);
+
+
+
+void fragment() {
+// BooleanParameter:3
+	bool n_out3p0 = enabled;
+
+
+// ColorParameter:2
+	vec4 n_out2p0 = hit_colour;
+
+
+// Input:5
+	vec4 n_out5p0 = COLOR;
+
+
+	vec3 n_out4p0;
+// If:4
+	float n_in4p1 = 1.00000;
+	float n_in4p2 = 0.00001;
+	if(abs((n_out3p0 ? 1.0 : 0.0) - n_in4p1) < n_in4p2)
+	{
+		n_out4p0 = vec3(n_out2p0.xyz);
+	}
+	else if((n_out3p0 ? 1.0 : 0.0) < n_in4p1)
+	{
+		n_out4p0 = vec3(n_out5p0.xyz);
+	}
+	else
+	{
+		n_out4p0 = vec3(n_out5p0.xyz);
+	}
+
+
+// Output:0
+	COLOR.rgb = n_out4p0;
+
+
+}
+"
+mode = 1
+flags/light_only = false
+nodes/fragment/0/position = Vector2(580, 80)
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_pul1a")
+nodes/fragment/2/position = Vector2(-440, 260)
+nodes/fragment/3/node = SubResource("VisualShaderNodeBooleanParameter_7jc40")
+nodes/fragment/3/position = Vector2(-440, 40)
+nodes/fragment/4/node = SubResource("VisualShaderNodeIf_vewsw")
+nodes/fragment/4/position = Vector2(-20, 60)
+nodes/fragment/5/node = SubResource("VisualShaderNodeInput_vt801")
+nodes/fragment/5/position = Vector2(-440, 500)
+nodes/fragment/connections = PackedInt32Array(3, 0, 4, 0, 2, 0, 4, 3, 4, 0, 0, 0, 5, 0, 4, 4, 5, 0, 4, 5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_od3ui"]
+shader = SubResource("VisualShader_hvfyp")
+shader_parameter/enabled = false
+shader_parameter/hit_colour = Color(0.835294, 0, 0, 1)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_l8h54"]
+load_path = "res://.godot/imported/player-Idle.png-a1c8a9062ffa598e65caafe5c2d108ed.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n7ghd"]
+atlas = SubResource("CompressedTexture2D_l8h54")
+region = Rect2(0, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nvl01"]
+atlas = SubResource("CompressedTexture2D_l8h54")
+region = Rect2(128, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ivps1"]
+atlas = SubResource("CompressedTexture2D_l8h54")
+region = Rect2(256, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_urp6f"]
+atlas = SubResource("CompressedTexture2D_l8h54")
+region = Rect2(384, 0, 128, 96)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_4ntmi"]
+load_path = "res://.godot/imported/player-Jump.png-654184ab4cb0f7e39bef69aeea4c86c4.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dw050"]
+atlas = SubResource("CompressedTexture2D_4ntmi")
+region = Rect2(0, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b26j0"]
+atlas = SubResource("CompressedTexture2D_4ntmi")
+region = Rect2(128, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7hik5"]
+atlas = SubResource("CompressedTexture2D_4ntmi")
+region = Rect2(256, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qtqh7"]
+atlas = SubResource("CompressedTexture2D_4ntmi")
+region = Rect2(384, 0, 128, 96)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_btcbx"]
+load_path = "res://.godot/imported/player-Run.png-3745bada25c5c8bb20bedb113ce7e67a.ctex"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bwjto"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(0, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_606se"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(128, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u1c27"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(256, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_op7ga"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(384, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q13i1"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(512, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pylmc"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(640, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pbfsw"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(768, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5tmop"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(896, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7ahtn"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(1024, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7lmhl"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(1152, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dx0e4"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(1280, 0, 128, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jm5j8"]
+atlas = SubResource("CompressedTexture2D_btcbx")
+region = Rect2(1408, 0, 128, 96)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_gwnis"]
+load_path = "res://.godot/imported/attackside-export1.png-9b01b7ab6f5d7ff6832996c8a748746e.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_k53q1"]
+load_path = "res://.godot/imported/attackside-export2.png-553e60bcc8c0c94abcca391c003fe736.ctex"
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7hik5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n7ghd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nvl01")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ivps1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_urp6f")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dw050")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b26j0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7hik5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qtqh7")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bwjto")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_606se")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u1c27")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_op7ga")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q13i1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pylmc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pbfsw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5tmop")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7ahtn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7lmhl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dx0e4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jm5j8")
+}],
+"loop": true,
+"name": &"run",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("CompressedTexture2D_gwnis")
+}, {
+"duration": 1.0,
+"texture": SubResource("CompressedTexture2D_k53q1")
+}],
+"loop": true,
+"name": &"run_shoot",
+"speed": 6.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qtqh7"]
+radius = 13.0
+height = 40.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2hs0m"]
+radius = 16.0
+height = 48.0
+
+[sub_resource type="Animation" id="Animation_x3vf3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:material:shader_parameter/enabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_00tjw"]
+resource_name = "hit"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:material:shader_parameter/enabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_apopc"]
+_data = {
+&"RESET": SubResource("Animation_x3vf3"),
+&"hit": SubResource("Animation_00tjw")
+}
+
+[node name="player" type="CharacterBody2D" groups=["Player"]]
+collision_layer = 2
+script = SubResource("GDScript_hvfyp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_od3ui")
+position = Vector2(0, -48)
+sprite_frames = SubResource("SpriteFrames_7hik5")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2, -20)
+shape = SubResource("CapsuleShape2D_qtqh7")
+
+[node name="muzzle" type="Marker2D" parent="."]
+position = Vector2(19, -22)
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 4
+
+[node name="HurtboxCollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(2, -19)
+shape = SubResource("CapsuleShape2D_2hs0m")
+debug_color = Color(0.965672, 0, 0.485265, 0.42)
+
+[node name="HitAnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_apopc")
+}
+
+[connection signal="body_entered" from="Hurtbox" to="." method="_on_hurtbox_body_entered"]
